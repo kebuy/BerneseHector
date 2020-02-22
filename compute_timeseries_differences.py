@@ -88,12 +88,6 @@ def computeCTSdiff(file1, file2):
 
 ##Main program begins here
 
-# .enu files are stored in
-# all .enu files for cts differences can be stored in one directory.
-#Multiple directories can be used,
-#or example, if cts differences are to be computed between the same stations of different solution types
-
-
 if (len(sys.argv)<3 or len(sys.argv)>3):
     print('\n')
     print ('>> Nope! :( run it correctly \n ')
@@ -105,6 +99,10 @@ else:
     stnlist1 = sys.argv[1]
     stnlist2 = sys.argv[2]
 
+# .enu files are stored in
+# all .enu files for cts differences can be stored in one directory.
+#Multiple directories can be used,
+#For example, if cts differences are to be computed between the same stations of different solution types
 enu_files1 = './hectorInputs/'
 enu_files2 = './hectorInputs/'
 
