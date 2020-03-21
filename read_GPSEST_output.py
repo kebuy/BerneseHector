@@ -12,7 +12,7 @@ from hectctl import *
 
 
 """
-# Purpose : reads GPSEST output file from Bernese and creates .cts files
+# Purpose : reads GPSEST output file from Bernese and creates .cts and .enu files
 #
 #
 # Author  : Kibrom E. Abraha
