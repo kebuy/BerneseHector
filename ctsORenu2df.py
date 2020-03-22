@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-def cts2df(inputfile):
+def cts2df(inputfile, notrend=True):
     """
 # Function : Creates Pandas Dataframe from a .cts file 
 #            (.cts file must be in a format created by readGPSESToutput().
@@ -11,7 +11,9 @@ def cts2df(inputfile):
 # Author  : Kibrom E. Abraha
 #
 #
-#Inputs: file1 -- file name (including the file path) 
+#Inputs: inputfile -- file name (including the file path) 
+#        Defalut returns df with detrended N, E, U values
+#        if the trend is needed in the df, notrend=False shall be used
 #
 #Outputs: pandas Dataframe
 #-------------------------------------------------------------------------------
@@ -55,12 +57,20 @@ def cts2df(inputfile):
         df[dfi] = ls
     
     cts.close()
+    
+    if notrend:
+        mn, bn, dn  = lintrend(df.decY, df.N, dtrend=True)
+        me, be, de  = lintrend(df.decY, df.E, dtrend=True)
+        mu, bu, du  = lintrend(df.decY, df.U, dtrend=True)
+        df = pd.DataFrame(list(zip(df.decY, dn, de, du, df.dN, df.dE, df.dU)), 
+                          columns=['decY', 'N', 'E', 'U', 'dN', 'dE', 'dU'])
+        return df
+    else:
+        return df
 
-    return df
 
 
-
-def HectorNEU2df(inputfile):
+def HectorNEU2df(inputfile, notrend=True):
     """
 # Function : Creates Pandas Dataframe from a Hector Input files (.enu) file 
 #            (.enu file must be in a format created by readGPSESToutput().
@@ -70,7 +80,9 @@ def HectorNEU2df(inputfile):
 # Author  : Kibrom E. Abraha
 #
 #
-#Inputs: file1 -- file name (including the file path) 
+#Inputs: inputfile -- file name (including the file path) 
+#        Defalut returns df with detrended N, E, U values
+#        if the trend is needed in the df, notrend=False shall be used 
 #
 #Outputs: pandas Dataframe
 #-------------------------------------------------------------------------------
@@ -106,6 +118,12 @@ def HectorNEU2df(inputfile):
         df[dfi] = ls
     
     cts.close()
-
-    return df
-
+    
+    if notrend:
+        mn, bn, dn  = lintrend(df.decY, df.N, dtrend=True)
+        me, be, de  = lintrend(df.decY, df.E, dtrend=True)
+        mu, bu, du  = lintrend(df.decY, df.U, dtrend=True)
+        df = pd.DataFrame(list(zip(df.decY, dn, de, du)), columns=['decY', 'N', 'E', 'U'])
+        return df
+    else:
+        return df
