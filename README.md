@@ -15,4 +15,6 @@ J. Geod., Vol 87(4), 351-360, doi:10.1007/s00190-012-0605-0.)
 
 # BerneseHector
 It is just a collection of python scripts which connects Bernese and Hector
---- It is still being developed
+
+
+#  --- It is still being developed although you can still use all the scripts
