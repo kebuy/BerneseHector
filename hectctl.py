@@ -1,5 +1,5 @@
 #-------------------------------------------
-def removeoutliers_ctl(station, component):
+def removeoutliers_ctl(station, component, enu_files, hectorResults):
 #-------------------------------------------
     """ 
 # Function : Creates Hector control file for removing outliers
@@ -17,11 +17,11 @@ def removeoutliers_ctl(station, component):
 
 
     ctl_f = open("removeoutliers.ctl", "w")
-    ctl_f.write("DataFile            {0:s}.enu\n".format(station))
-    ctl_f.write("DataDirectory         ./hectorInputs/\n")
-    ctl_f.write("component             {0:s}\n".format(component))
+    ctl_f.write("DataFile            {}.enu\n".format(station))
+    ctl_f.write("DataDirectory         {}\n".format(enu_files))
+    ctl_f.write("component             {}\n".format(component))
     ctl_f.write("interpolate           no\n")
-    ctl_f.write("OutputFile            ./hectorResults/{0:s}_outliers_removed.mom\n".format(station+'_'+component))
+    ctl_f.write("OutputFile            {}{}_outliers_removed.mom\n".format(hectorResults, station+'_'+component))
     ctl_f.write("seasonalsignal        yes\n")
     ctl_f.write("halfseasonalsignal    yes\n")
     ctl_f.write("estimateoffsets       yes\n")
@@ -34,7 +34,7 @@ def removeoutliers_ctl(station, component):
 
 
 #------------------------------------------------------
-def estimatetrend_ctl (station, component, noisemodel):
+def estimatetrend_ctl (station, component, noisemodel, hectorResults):
 #------------------------------------------------------
     """ 
 # Function : Creates Hector control file for estimating trend
@@ -54,9 +54,9 @@ def estimatetrend_ctl (station, component, noisemodel):
 
 
     ctl_f = open("estimatetrend.ctl", "w")
-    ctl_f.write("DataFile              {0:s}_outliers_removed.mom\n".format(station+'_'+component))
-    ctl_f.write("DataDirectory         ./hectorResults/\n")
-    ctl_f.write("OutputFile            ./hectorResults/{0:s}_estimated_trend.mom\n".format(station+'_'+component))
+    ctl_f.write("DataFile              {}_outliers_removed.mom\n".format(station+'_'+component))
+    ctl_f.write("DataDirectory         {}\n".format(hectorResults))
+    ctl_f.write("OutputFile            {}{}_estimated_trend.mom\n".format(hectorResults, station+'_'+component))
     ctl_f.write("interpolate           no\n")
     ctl_f.write("ScaleFactor           1.0\n")
     if noisemodel == 'GGMWN':
@@ -91,7 +91,7 @@ def estimatetrend_ctl (station, component, noisemodel):
     ctl_f.close()
 
 #-------------------------------------------
-def estimatespectrum_ctl(station, component):
+def estimatespectrum_ctl(station, component,  hectorResults):
 #-------------------------------------------
     """ 
 # Function : Creates Hector control file for spectral analysis
@@ -108,9 +108,9 @@ def estimatespectrum_ctl(station, component):
 
 
     ctl_f = open("estimatespectrum.ctl", "w")
-    ctl_f.write("DataFile              {0:s}_estimated_trend.mom\n".format(station+'_'+component))
-    ctl_f.write("DataDirectory         ./hectorResults/\n")
-    ctl_f.write("OutputFile            ./hectorResults/{0:s}_estimatedSpectrum.spectra\n".format(station+'_'+component))
+    ctl_f.write("DataFile              {}_estimated_trend.mom\n".format(station+'_'+component))
+    ctl_f.write("DataDirectory         {}\n".format(hectorResults))
+    ctl_f.write("OutputFile            {}{}_estimatedSpectrum.spectra\n".format(hectorResults, station+'_'+component))
     ctl_f.write("interpolate           no\n")
     ctl_f.write("firstdifference       no\n")
     ctl_f.write("ScaleFactor           1.0\n")
@@ -120,7 +120,7 @@ def estimatespectrum_ctl(station, component):
 
 
 #-------------------------------------------
-def modelspectrum_ctl(station, component, noisemodel):
+def modelspectrum_ctl(station, component, noisemodel, hectorResults):
 #-------------------------------------------
     """ 
 # Function : Creates Hector control file for spectral modeling
@@ -138,7 +138,7 @@ def modelspectrum_ctl(station, component, noisemodel):
 
 
     ctl_f = open("modelspectrum.ctl", "w")
-    ctl_f.write("OutputFile            ./hectorResults/{0:s}_modeledSpectrum.spectra\n".format(station+'_'+component))
+    ctl_f.write("OutputFile            {}{}_modeledSpectrum.spectra\n".format(hectorResults, station+'_'+component))
     if noisemodel == 'GGMWN':
         ctl_f.write("NoiseModels           GGM White\n")
     elif noisemodel == 'FNWN':

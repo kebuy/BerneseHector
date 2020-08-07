@@ -43,12 +43,12 @@ f.close()
 components = ['East', 'North', 'Up']
 
 #Hector inputs
-enu_files = './hectorInputs/'
+enu_files = '/media/kibrom/C26202FD6202F647/kwork/pps/data/singles/'
 
 #Check if a directory is available for hector results
 #Create it if not available
 
-hectorResults = './hectorResults/'
+hectorResults = '/media/kibrom/C26202FD6202F647/kwork/pps/data/hectrResults/'
 if not os.path.isdir(hectorResults):
     os.mkdir(hectorResults)
 
@@ -62,20 +62,20 @@ for stns in stations:
         print ("Station:  " + stns)
         for cmpts in components:
             print ("    " + cmpts + " Component")
-            removeoutliers_ctl(stns, cmpts)
-            estimatetrend_ctl(stns, cmpts, noisemodel)
-            estimatespectrum_ctl(stns, cmpts)
-            modelspectrum_ctl(stns, cmpts, noisemodel)
+            removeoutliers_ctl(stns, cmpts, enu_files, hectorResults)
+            estimatetrend_ctl(stns, cmpts, noisemodel, hectorResults)
+            estimatespectrum_ctl(stns, cmpts, hectorResults)
+            modelspectrum_ctl(stns, cmpts, noisemodel, hectorResults)
 
 
             os.system("removeoutliers removeoutliers.ctl > outliersRemoved.out")
-            shutil.copyfile("./outliersRemoved.out", "./hectorResults/" + stns +'_'+ cmpts + "_outliersRemoved.out")
+            shutil.copyfile("./outliersRemoved.out", hectorResults + stns +'_'+ cmpts + "_outliersRemoved.out")
             os.remove('./outliersRemoved.out')
             #os.remove('./removeoutliers.ctl')
             print ("                --- Outliers removed" )
 
             os.system("estimatetrend estimatetrend.ctl > trendEstimated.out")
-            shutil.copyfile("./trendEstimated.out", "./hectorResults/" + stns +'_'+ cmpts + "_trendEstimated.out")
+            shutil.copyfile("./trendEstimated.out", hectorResults + stns +'_'+ cmpts + "_trendEstimated.out")
             os.remove('./trendEstimated.out')
             #os.remove('./estimatetrend.ctl')
 
@@ -83,14 +83,14 @@ for stns in stations:
 
             if Spectral.upper() == 'YES':
                 os.system("estimatespectrum estimatespectrum.ctl > spectrumEstimated.out")
-                shutil.copyfile("./spectrumEstimated.out", "./hectorResults/" + stns +'_'+ cmpts + "_spectrumEstimated.out")
+                shutil.copyfile("./spectrumEstimated.out", hectorResults + stns +'_'+ cmpts + "_spectrumEstimated.out")
                 os.remove('./spectrumEstimated.out')
              #   os.remove('./estimatespectrum.ctl')
                 print ("                --- Spectrum estimated" )
 
                 ##prepare inputs (modelspectrum.inp) to model spectrum (see hector1.7.2 manual page 15)
 
-                ff = open('./hectorResults/' + stns +'_'+ cmpts + '_trendEstimated.out', 'r')
+                ff = open(hectorResults + stns +'_'+ cmpts + '_trendEstimated.out', 'r')
                 
                 tmp = []
                 for i, lines in enumerate(ff):
@@ -110,7 +110,7 @@ for stns in stations:
                     if lines[0:6] == 'White:':
                         WL_fraction = float(tmp[i+1].split()[2])
                 
-                ff2 = open('./hectorResults/' + stns +'_'+ cmpts + '_spectrumEstimated.out', 'r')
+                ff2 = open(hectorResults + stns +'_'+ cmpts + '_spectrumEstimated.out', 'r')
 
                 for lines in ff2:
                     if lines[0:6] =='freq0:':
@@ -135,7 +135,7 @@ for stns in stations:
                 sf.close()
 
                 os.system("modelspectrum  <  modelspectrum.inp > spectrumModeled.out")
-                shutil.copyfile("./spectrumModeled.out", "./hectorResults/" + stns +'_'+ cmpts + "_spectrumModeled.out")
+                shutil.copyfile("./spectrumModeled.out", hectorResults + stns +'_'+ cmpts + "_spectrumModeled.out")
                 os.remove('./spectrumModeled.out')
                # os.remove('./modelspectrum.inp')
                 print ("                --- Spectrum modeled" )
